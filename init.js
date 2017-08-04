@@ -116,12 +116,10 @@ function queueLoaded(event)
     spriteSheet = new createjs.SpriteSheet({
         "images": [queue.getResult('explosion')],
         "frames": {"width": 38, "height": 36},
-        "animations": {"explode": [1, 43]},
+        "animations": {"explode": [0, 42]},
         "framerate": 30
     });
 
-    // Create explosion
-    createExplosion();
 
     // Add crosshair
     crossHair = new createjs.Bitmap(queue.getResult("crossHair"));
@@ -138,18 +136,24 @@ function queueLoaded(event)
 }
 
 function createExplosion(){
-    let i = 0;
-    while (i !== 2){
-        const animatedExplosion = new createjs.Sprite(spriteSheet, "explode");
-        animatedExplosion.regX = 23;
-        animatedExplosion.regY = 18;
-        animatedExplosion.x = 250;
-        animatedExplosion.y = 250;
-        stage.addChildAt(animatedExplosion, 1);
-        animatedExplosion.gotoAndPlay("explode");
-        i += 1;
+    //Spritesheet animation variable:
+    var animatedExplosion = new createjs.Sprite(spriteSheet, "explode");
+    animatedExplosion.regX = 23;
+    animatedExplosion.regY = 18;
+    animatedExplosion.x = 250;
+    animatedExplosion.y = 250;
+    stage.addChildAt(animatedExplosion, 1);
+    animatedExplosion.gotoAndPlay("explode");
+    if(animatedExplosion.currentAnimationFrame === 42) {
+        animatedExplosion.gotoAndStop("explode");
+        stage.removeChild(animatedExplosion);
     }
-    stage.removeChildAt(1);
+    animatedExplosion.onAnimatedEnd = animatedExplosion.stop;
+    var test = new createjs.Text(animatedExplosion.currentAnimationFrame.toString(), "36px Arial", "#FFF");
+    test.x = 500;
+    test.y = 500;
+    stage.addChild(test);
+
 }
 
 
@@ -311,8 +315,6 @@ function positionEnemyMissiles(){
     positionTest2.y = missileSiteID.y + 40;
     stage.addChild(positionTest2);
 
-
-
 }
 
 function moveSelector(latitude = document.getElementById("latitude").value.toUpperCase(), longitude = document.getElementById("longitude").value.toUpperCase()){
@@ -387,6 +389,9 @@ function fireMissile(){
     var longitude = document.getElementById("longitude").value;
     document.getElementById("latitudeDisplay").innerHTML = latitude;
     document.getElementById("longitudeDisplay").innerHTML = longitude;
+
+    // Create explosion
+    createExplosion();
 
 }
 
