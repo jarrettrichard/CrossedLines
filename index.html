@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crossed Lines</title>
+        <link href="normalize.css" type="text/css" rel="stylesheet" />
+        <link href="crossedLinesStyle.css" type="text/css" rel="stylesheet" />
+        <script language="javascript" type="text/javascript" src="http://code.createjs.com/createjs-2013.12.12.min.js" ></script>
+        <script language="javascript" type="text/javascript" src="fastclick.js"></script>
+        <script language="javascript" type="text/javascript" src="init.js" ></script>
+    </head>
+    <body>
+        <canvas id="myCanvas"></canvas>
+        <input type="text" onkeyup="moveSelector()" id="latitude" size="1" maxlength="3" placeholder="30N"
+            onblur="inputBlur(this)" autofocus/>
+        <input type="text" onkeyup="moveSelector()" id="longitude" size="2" maxlength="4" placeholder="90W">
+        <button class="button" onclick="fireMissile()" id="fire_button"> <span>LAUNCH!</span></button>
+
+        <p id="latitudeDisplay"></p>
+        <p id="longitudeDisplay"></p>
+
+    </body>
+</html>
