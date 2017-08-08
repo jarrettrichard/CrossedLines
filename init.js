@@ -1,22 +1,18 @@
-var context;
-var queue;
 var WIDTH = 965;
 var mapWidth = 0.883026869278736 * WIDTH;
 var HEIGHT = 682;
 
 // I used the word "console" below to refer to the Cold War computer console that the game is supposed to reflect.//
 var CONSOLEHEIGHT = 843;
-var stage;
 var scoreText;
 var gameTimer;
 var gameTime = 0;
 var timerText;
-var missileSiteIDwidthPct = 0.00636787564766839378238341968912;
-var map_crosshair_dimensions = 0.02331606217616580310880829015544 * WIDTH;
-var spritesheet; /*The explosion spritesheet.*/
+const missileSiteIDwidthPct = 0.00636787564766839378238341968912;
+const map_crosshair_dimensions = 0.02331606217616580310880829015544 * WIDTH;
 
-var numEnemyMissileTotal = 10;
-var numEnemyMissileDestroyed = 0;
+const numEnemyMissileTotal = 10;
+let numEnemyMissileDestroyed = 0;
 var missileSitesArray = new Array(numEnemyMissileTotal);
 
 //I CANNOT GET THE ARRAY REFERENCE TO "allPctToEachLine[0] to work in doing the x position! I don't know why.//
@@ -34,18 +30,18 @@ var xPosition;
 var yPosition;
 
 //Regular Expressions
-var latPattern = /^(\s{0,2}0{1}\s{0,2}(N|S)?\s?){1}|^(15|30|45|60)(N|S)|75N/;
-var longPattern = /^(\s{0,3}0\s{0,2}(W|E)?\s?){1}|^\s?(15|30|45|60|75|90|105|120|135|150|165)\s?(W|E)|^\s?180\s?(W|E)?/;
-var oneEightyPattern = /^\s?180\s?(W|E)?/;
+const latPattern = /^(\s{0,2}0{1}\s{0,2}(N|S)?\s?){1}|^(15|30|45|60)(N|S)|75N/;
+const longPattern = /^(\s{0,3}0\s{0,2}(W|E)?\s?){1}|^\s?(15|30|45|60|75|90|105|120|135|150|165)\s?(W|E)|^\s?180\s?(W|E)?/;
+const oneEightyPattern = /^\s?180\s?(W|E)?/;
 
 
 //Array below is in the order from top latitude line to bottom latitude line.
-var allPctToEachLatLine = [0.1025, 0.14665102639296187683284457478006, 0.09154545454545454545454545454545, 0.06876832844574780058651026392962,
+const allPctToEachLatLine = [0.1025, 0.14665102639296187683284457478006, 0.09154545454545454545454545454545, 0.06876832844574780058651026392962,
     0.05776979472140762463343108504399, 0.05502199413489736070381231671554, 0.05489002932551319648093841642229, 0.05685190615835777126099706744868, 0.06876832844574780058651026392962,
     0.08975806451612903225806451612903, 0.14834310850439882697947214076246];
 //Array below is in the order of left most longitude line to rightmost (the second line is repeated the rest of the way)
 //Second number in array below is relative to the width of the middle 24 lines of longitude on the map, not the entire background image
-var allPctToEachLongLine = [0.0470, 0.03835];
+const allPctToEachLongLine = [0.0470, 0.03835];
 
 window.onload = function()
 {
@@ -53,8 +49,8 @@ window.onload = function()
      *      Set up the Canvas with Size and height
      *
      */
-    var canvas = document.getElementById('myCanvas');
-    context = canvas.getContext('2d');
+    const canvas = document.getElementById('myCanvas');
+    const context = canvas.getContext('2d');
     context.canvas.width = WIDTH;
     context.canvas.height = CONSOLEHEIGHT;
     stage = new createjs.Stage("myCanvas");
@@ -162,7 +158,7 @@ function updateTime()
 	{
 		//End Game and Clean up
 		timerText.text = "GAME OVER";
-        var si =createjs.Sound.play("gameOverSound");
+        const si =createjs.Sound.play("gameOverSound");
 		clearInterval(gameTimer);
 	}
 	else
@@ -174,7 +170,7 @@ function updateTime()
 
 
 function positionLatInputBoxes(x_pos_latitudeInputBox, y_pos_latitudeInputBox){
-    var latBox = document.getElementById("latitude");
+    const latBox = document.getElementById("latitude");
     latBox.style.position = "absolute";
     latBox.style.left = x_pos_latitudeInputBox + 'px';
     latBox.style.top = y_pos_latitudeInputBox + 'px';
@@ -182,7 +178,7 @@ function positionLatInputBoxes(x_pos_latitudeInputBox, y_pos_latitudeInputBox){
 }
 
 function positionLongInputBoxes(x_pos_latitudeInputBox, y_pos_latitudeInputBox){
-    var longBox = document.getElementById("longitude");
+    const longBox = document.getElementById("longitude");
     longBox.style.position = "absolute";
     longBox.style.left = x_pos_latitudeInputBox + 'px';
     longBox.style.top = y_pos_latitudeInputBox + 'px';
@@ -190,7 +186,7 @@ function positionLongInputBoxes(x_pos_latitudeInputBox, y_pos_latitudeInputBox){
 }
 
 function positionFireButton(x_positionFireButton, y_pos_FireButton){
-    var fireButtonBox = document.getElementById("fire_button");
+    const fireButtonBox = document.getElementById("fire_button");
     fireButtonBox.style.position = "absolute";
     fireButtonBox.style.left = x_positionFireButton + 'px';
     fireButtonBox.style.top = y_pos_FireButton + 'px';
@@ -198,7 +194,7 @@ function positionFireButton(x_positionFireButton, y_pos_FireButton){
 }
 
 function xPositionFunc(num, crosshair = false) {
-    if(num == "" && num.toString() != "0") {
+    if(num === "" && num.toString() !== "0") {
         xPosition = (Math.floor((allPctToEachLongLine[0] * WIDTH) + Math.floor((Math.random() * 24)) * (allPctToEachLongLine[1]) * WIDTH));
     }
     /*I added in the else if statement as well as the check for the "crosshair" boolean, because I want to be able to submit a number
@@ -220,47 +216,47 @@ function yPositionFunc(ySelector = Math.floor((Math.random() * 11)), crosshair =
         case 1:
             break;
         case 2:
-            for (var i = 1; i < 2; i++) {
+            for (let i = 1; i < 2; i++) {
                 yPosition += allPctToEachLatLine[i] * HEIGHT;
             }
             break;
         case 3:
-            for (i = 1; i < 3; i++) {
+            for (let i = 1; i < 3; i++) {
                 yPosition += allPctToEachLatLine[i] * HEIGHT;
             }
             break;
         case 4:
-            for (i = 1; i < 4; i++) {
+            for (let i = 1; i < 4; i++) {
                 yPosition += allPctToEachLatLine[i] * HEIGHT;
             }
             break;
         case 5:
-            for (i = 1; i < 5; i++) {
+            for (let i = 1; i < 5; i++) {
                 yPosition += allPctToEachLatLine[i] * HEIGHT;
             }
             break;
         case 6:
-            for (i = 1; i < 6; i++) {
+            for (let i = 1; i < 6; i++) {
                 yPosition += allPctToEachLatLine[i] * HEIGHT;
             }
             break;
         case 7:
-            for (i = 1; i < 7; i++) {
+            for (let i = 1; i < 7; i++) {
                 yPosition += allPctToEachLatLine[i] * HEIGHT;
             }
             break;
         case 8:
-            for (i = 1; i < 8; i++) {
+            for (let i = 1; i < 8; i++) {
                 yPosition += allPctToEachLatLine[i] * HEIGHT;
             }
             break;
         case 9:
-            for (i = 1; i < 9; i++) {
+            for (let i = 1; i < 9; i++) {
                 yPosition += allPctToEachLatLine[i] * HEIGHT;
             }
             break;
         case 10:
-            for (i = 1; i < 10; i++) {
+            for (let i = 1; i < 10; i++) {
                 yPosition += allPctToEachLatLine[i] * HEIGHT;
             }
     }
@@ -274,7 +270,7 @@ function yPositionFunc(ySelector = Math.floor((Math.random() * 11)), crosshair =
 
 
 function positionEnemyMissiles(){
-    for(var i=0;i<numEnemyMissileTotal;i++){
+    for(let i=0;i<numEnemyMissileTotal;i++){
         var missileSiteID = new createjs.Bitmap(queue.getResult("missileSiteID"));
         /*Set some initial x and y positions for the new enemy missile.*/
         missileSiteID.x = xPositionFunc("", false);
@@ -303,12 +299,12 @@ function positionEnemyMissiles(){
         stage.addChild(missileSiteID);
     }
 
-    var positionTest = new createjs.Text(missileSiteID.x.toString(), "36px Arial", "#FFF");
+    const positionTest = new createjs.Text(missileSiteID.x.toString(), "36px Arial", "#FFF");
     positionTest.x = missileSiteID.x;
     positionTest.y = missileSiteID.y;
     stage.addChild(positionTest);
 
-    var positionTest2 = new createjs.Text(missileSiteID.y.toString(), "36px Arial", "#FFF");
+    const positionTest2 = new createjs.Text(missileSiteID.y.toString(), "36px Arial", "#FFF");
     positionTest2.x = missileSiteID.x;
     positionTest2.y = missileSiteID.y + 40;
     stage.addChild(positionTest2);
@@ -341,22 +337,22 @@ function moveSelector(latitude = document.getElementById("latitude").value.toUpp
     }*/
 
     stage.addChild(crossHair);
-``}
+}
 
 
 //I need this function to interpret the input from the users (lat/long degrees) and convert them to pixels.
 
 function latPositionalMath(latInput){
-    var y;
-    if(latInput.charAt(2) == "N" && parseInt(latInput)!= 0){
+    let y;
+    if(latInput.charAt(2) === "N" && parseInt(latInput)!== 0){
         y = (75 - parseInt(latInput))/15;
     }
 
-    else if(latInput.charAt(2) == "S" && parseInt(latInput)!= 0){
+    else if(latInput.charAt(2) === "S" && parseInt(latInput)!== 0){
         y = 5 + parseInt(latInput)/15;
     }
 
-    else if(parseInt(latInput) == 0){
+    else if(parseInt(latInput) === 0){
         y = 5;
     }
     y += 1;
@@ -365,16 +361,16 @@ function latPositionalMath(latInput){
 
 function longPositionalMath(longInput){
     //x is the number of longitude lines that the crosshair selector will be removed from the 165 degrees West line
-    var x;
-    if(longInput.charAt(2) == "W" || longInput.charAt(3) == "W" && parseInt(longInput)!= 0 && !oneEightyPattern.test(longInput)){
+    let x;
+    if(longInput.charAt(2) === "W" || longInput.charAt(3) === "W" && parseInt(longInput)!== 0 && !oneEightyPattern.test(longInput)){
         x = (165 - parseInt(longInput))/15;
     }
 
-    else if(longInput.charAt(2) == "E" || longInput.charAt(3) == "E" || oneEightyPattern.test(longInput) && parseInt(longInput)!= 0){
+    else if(longInput.charAt(2) === "E" || longInput.charAt(3) === "E" || oneEightyPattern.test(longInput) && parseInt(longInput)!== 0){
         x = 11 + parseInt(longInput)/15;
     }
 
-    else if(parseInt(longInput) == 0){
+    else if(parseInt(longInput) === 0){
         x = 11;
     }
 
@@ -383,8 +379,8 @@ function longPositionalMath(longInput){
 
 
 function fireMissile(){
-    var latitude = document.getElementById("latitude").value;
-    var longitude = document.getElementById("longitude").value;
+    let latitude = document.getElementById("latitude").value;
+    let longitude = document.getElementById("longitude").value;
     document.getElementById("latitudeDisplay").innerHTML = latitude;
     document.getElementById("longitudeDisplay").innerHTML = longitude;
 
