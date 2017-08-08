@@ -130,30 +130,28 @@ function queueLoaded(event)
     // Add ticker
     createjs.Ticker.setFPS(15);
     createjs.Ticker.addEventListener('tick', stage);
+    createjs.Ticker.addEventListener('tick', tickEvent);
 
-
-
+    //Spritesheet animation object:
+    ANIMATEDEXPLOSION = new createjs.Sprite(spriteSheet, "explode");
 }
 
-function createExplosion(){
-    //Spritesheet animation variable:
-    var animatedExplosion = new createjs.Sprite(spriteSheet, "explode");
-    animatedExplosion.regX = 23;
-    animatedExplosion.regY = 18;
-    animatedExplosion.x = 250;
-    animatedExplosion.y = 250;
-    stage.addChildAt(animatedExplosion, 1);
-    animatedExplosion.gotoAndPlay("explode");
-    if(animatedExplosion.currentAnimationFrame === 42) {
-        animatedExplosion.gotoAndStop("explode");
-        stage.removeChild(animatedExplosion);
+function tickEvent(){
+    //This part waits to hear for the explosion animation's ending frame before it terminates. (looping only once)
+    if(ANIMATEDEXPLOSION.currentAnimationFrame >= 39){
+        ANIMATEDEXPLOSION.gotoAndStop("explode");
+        stage.removeChild(ANIMATEDEXPLOSION);
     }
-    animatedExplosion.onAnimatedEnd = animatedExplosion.stop;
-    var test = new createjs.Text(animatedExplosion.currentAnimationFrame.toString(), "36px Arial", "#FFF");
-    test.x = 500;
-    test.y = 500;
-    stage.addChild(test);
+}
 
+
+function createExplosion(){
+    ANIMATEDEXPLOSION.regX = 23;
+    ANIMATEDEXPLOSION.regY = 18;
+    ANIMATEDEXPLOSION.x = 700;
+    ANIMATEDEXPLOSION.y = 250;
+    stage.addChildAt(ANIMATEDEXPLOSION, 1);
+    ANIMATEDEXPLOSION.gotoAndPlay("explode");
 }
 
 
@@ -391,7 +389,7 @@ function fireMissile(){
     document.getElementById("longitudeDisplay").innerHTML = longitude;
 
     // Create explosion
-    createExplosion();
+    createExplosion(ANIMATEDEXPLOSION);
 
 }
 
